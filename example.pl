@@ -1,7 +1,9 @@
 use MmdefXmlToPb;
+use Data::Dumper;
 
-
-my $xmlstring = '<malwareMetaData xmlns="http://xml/metadataSharing.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xml/metadataSharing.xsd file:metadataSharing.xsd" version="1.200000" id="10000">
+#sample from http://grouper.ieee.org/groups/malware/malwg/Schema1.2/full_clean_file_example.xml
+my $xmlstring = q (
+<malwareMetaData xmlns="http://xml/metadataSharing.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xml/metadataSharing.xsd file:metadataSharing.xsd" version="1.200000" id="10000">
     <company>N/A</company>
     <author>MMDEF Generation Script</author>
     <comment>Test MMDEF v1.2 file</comment>
@@ -95,6 +97,12 @@ my $xmlstring = '<malwareMetaData xmlns="http://xml/metadataSharing.xsd" xmlns:x
         </relationship>
     </relationships>
 </malwareMetaData>
-';
+);
 
-my $protobuf = MmdefXmlToPb->new({data=>$xmlstring});
+my $xmltopb = MmdefXmlToPb->new({data=>$xmlstring});
+#print Dumper($xmltopb->{'hashref'}); #getting the hash ref for further manipulation
+my $protobuf = $xmltopb->encode();
+#print Dumper($protobuf); #encoding as PB (warning, binary data)
+
+#this library can decode protobufs as well, although it just calls the decode function in the MMDEF::PB:Simple library
+#print Dumper($xmltopb->decode($protobuf)); 
